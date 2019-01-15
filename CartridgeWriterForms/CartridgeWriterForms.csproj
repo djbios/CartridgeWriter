@@ -80,9 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CartridgeWriter\CartridgeWriter.csproj">
-      <Project>{b47da4ea-086b-431c-b906-91032e3eafaa}</Project>
-      <Name>CartridgeWriter</Name>
+    <ProjectReference Include="..\CartridgeWriterCore\CartridgeWriterCore.csproj">
+      <Project>{2d2c6cca-1a10-4e2a-a536-bba104b46bbe}</Project>
+      <Name>CartridgeWriterCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
