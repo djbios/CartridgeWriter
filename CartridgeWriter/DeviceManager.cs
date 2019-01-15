@@ -121,21 +121,35 @@ namespace CartridgeWriter
 
             return result;
         }
-
+        private static bool IsOSUnix()
+        {
+            int p = (int)Environment.OSVersion.Platform;
+            return ((p == 4) || (p == 6) || (p == 128));
+        }
         private void LoadDevices()
         {
-            SelectQuery q = new SelectQuery("Win32_PNPEntity", "Name LIKE '%(COM%)%'");
-
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(q))
+            foreach (var port in SerialPort.GetPortNames())
             {
-                using (ManagementObjectCollection moc = searcher.Get())
-                {
-                    foreach (ManagementObject mo in moc)
-                    {
-                        devices.Add(new device { Name = mo["Name"].ToString() });
-                    }
-                }
+                devices.Add(new device { Name = port.ToString() });
             }
+
+            //if (IsOSUnix())
+            //{
+            //    string[] ttys = Directory.GetFiles("/dev/", "tty*");
+
+            //}
+            //SelectQuery q = new SelectQuery("Win32_PNPEntity", "Name LIKE '%(COM%)%'");
+
+            //using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(q))
+            //{
+            //    using (ManagementObjectCollection moc = searcher.Get())
+            //    {
+            //        foreach (ManagementObject mo in moc)
+            //        {
+            //            devices.Add(new device { Name = mo["Name"].ToString() });
+            //        }
+            //    }
+            //}
         }
 
         private bool PollForChip(SerialPort sp)

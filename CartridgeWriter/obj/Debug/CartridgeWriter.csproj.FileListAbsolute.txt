@@ -1,0 +1,14 @@
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\bin\Debug\CartridgeWriter.exe.config
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\bin\Debug\CartridgeWriter.exe
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\bin\Debug\CartridgeWriter.pdb
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.csprojAssemblyReference.cache
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.baml
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.g.cs
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\App.g.cs
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter_MarkupCompile.cache
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.g.resources
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.Properties.Resources.resources
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.csproj.GenerateResource.cache
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.csproj.CoreCompileInputs.cache
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.exe
+C:\Users\v-andoro\Downloads\CartridgeWriter-master_zip\CartridgeWriter-master\CartridgeWriter\obj\Debug\CartridgeWriter.pdb
