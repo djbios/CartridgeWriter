@@ -152,14 +152,19 @@ namespace CartridgeWriter
             //}
         }
 
-        private bool PollForChip(SerialPort sp)
+        private bool PollForChip(SerialPort sp, int retries = 5)
         {
             byte[] buffer = new byte[1];
             sp.Write("x");
 
             // Pause for buffer to fill.
-            while (sp.BytesToRead < 1)
+            while (sp.BytesToRead < 1 && retries > 0)
+            {
+                retries--;
                 Thread.Sleep(10);
+            }
+            if (sp.BytesToRead == 0)
+                throw new Exception("Timeout");
 
             sp.Read(buffer, 0, 1);
             return Encoding.ASCII.GetString(buffer).Equals("p");

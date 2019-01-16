@@ -38,9 +38,14 @@ namespace CartridgeWriterForms
                 MessageBox.Show("I need a Device and Printer Type before I can read.");
                 return;
             }
-
-            c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text));
-
+            try
+            {
+                c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Timeout expired");
+            }
             if (c == null)
                 return;
             LoadControls();
