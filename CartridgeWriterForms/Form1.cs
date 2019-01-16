@@ -16,8 +16,11 @@ namespace CartridgeWriterForms
         public Form1()
         {
             InitializeComponent();
-
+            var devices = dm.Devices.ToArray();
             cboDevice.Items.AddRange(dm.Devices.ToArray());
+            var i = cboDevice.FindStringExact("/dev/ttyUSB0");
+            if (i >=0)
+                cboDevice.SelectedIndex = i;
             cboPrinterType.Items.AddRange(Machine.GetAllTypes().ToArray());
             cboMaterialCurrent.Items.AddRange(Material.GetAllNames().ToArray());
             cboMaterialChangeTo.Items.AddRange(Material.GetAllNames().ToArray());

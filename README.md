@@ -1,6 +1,6 @@
 Cartridge Writer
 ================
-
+Multiplatform version 
 Note:	I have not had time to work on this repository in over a year, it has not
 	been updated with the latest code from https://github.com/bvanheu/stratasys
 	and does not appear to work with uprint cartridges.  I am hesitant to give
