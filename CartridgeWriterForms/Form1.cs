@@ -56,7 +56,8 @@ namespace CartridgeWriterForms
             txtEEPROMUID.Text = c.EEPROMUID.HexString();
             txtKeyFragment.Text = c.KeyFragment;
             txtSerialNumberCurrent.Text = c.SerialNumber.ToString("f1");
-            txtSerialNumberChangeTo.Text = txtSerialNumberCurrent.Text;
+            Random rnd = new Random();
+            txtSerialNumberChangeTo.Text = rnd.Next(10000000, 99999999).ToString() + ",0";
             cboMaterialCurrent.Text = c.Material.Name;
             cboMaterialChangeTo.Text = cboMaterialCurrent.Text;
             txtManufacturingLotCurrent.Text = c.ManufacturingLot;
@@ -68,7 +69,7 @@ namespace CartridgeWriterForms
             txtInitialQuantityCurrent.Text = c.InitialMaterialQuantity.ToString();
             txtInitialQuantityChangeTo.Text = txtInitialQuantityCurrent.Text;
             txtCurrentQuantityCurrent.Text = c.CurrentMaterialQuantity.ToString();
-            txtCurrentQuantityChangeTo.Text = txtCurrentQuantityCurrent.Text;
+            txtCurrentQuantityChangeTo.Text = txtInitialQuantityCurrent.Text;
             txtVersionCurrent.Text = c.Version.ToString();
             txtVersionChangeTo.Text = txtVersionCurrent.Text;
             txtSignatureCurrent.Text = c.Signature;
