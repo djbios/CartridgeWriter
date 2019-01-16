@@ -89,7 +89,7 @@ namespace CartridgeWriter
             if (BitConverter.IsLittleEndian)
                 rom = rom.Reverse();
 
-            SaveFlashToFile(rom, flash);
+            //SaveFlashToFile(rom, flash);
 
             c = new Cartridge(flash, machine, rom);
 
@@ -223,29 +223,29 @@ namespace CartridgeWriter
         }
 
         // Create a file of the DS2433 chip contents.
-        private void SaveFlashToFile(byte[] rom, byte[] flash)
-        {
-            string path = @".\EEPROMFiles";
+        //private void SaveFlashToFile(byte[] rom, byte[] flash)
+        //{
+        //    string path = @".\EEPROMFiles";
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+        //    if (!Directory.Exists(path))
+        //        Directory.CreateDirectory(path);
 
-            path = path + @"\" + rom.HexString();
+        //    path = path + @"\" + rom.HexString();
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+        //    if (!Directory.Exists(path))
+        //        Directory.CreateDirectory(path);
 
-            DateTime now = DateTime.Now;
+        //    DateTime now = DateTime.Now;
 
-            path = path + @"\" + now.ToString("yyyyMMdd.HHmmss") + ".bin";
+        //    path = path + @"\" + now.ToString("yyyyMMdd.HHmmss") + ".bin";
 
-            using (FileStream fs = File.Create(path))
-            {
-                fs.Write(flash, 0, 512);
-                fs.Flush();
-                fs.Close();
-            }
-        }
+        //    using (FileStream fs = File.Create(path))
+        //    {
+        //        fs.Write(flash, 0, 512);
+        //        fs.Flush();
+        //        fs.Close();
+        //    }
+        //}
 
         // Get the application settings and load them.
         private void LoadApplicationSettings()
