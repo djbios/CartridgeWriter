@@ -19,4 +19,4 @@ One line run script (just run it in console):
 
 1. Install mono framework https://www.mono-project.com/download/stable/
 2. Download exe file https://github.com/djbios/CartridgeWriter/blob/master/bin/CartridgeWriterForms.exe
-3. Run sudo mono --arch=32 `./CartridgeWriterForms.exe` in terminal
+3. Run `sudo mono --arch=32 ./CartridgeWriterForms.exe` in terminal
