@@ -74,7 +74,7 @@ namespace CartridgeWriter
         private byte[] _currentMaterialQuantityCRC = new byte[2];
 
 
-        public Cartridge(byte[] encrypted, Machine machine, byte[] eepromUID)
+        public Cartridge(byte[] encrypted, Machine machine, byte[] eepromUID, bool decrypt = true)
         {
             _encrypted = encrypted;
             _machine = machine;
@@ -83,7 +83,10 @@ namespace CartridgeWriter
 
             BuildKey();
             LoadCRC();
-            Decrypt();
+            if (decrypt)
+                Decrypt();
+            else
+                _decrypted = ByteExtensions.DefaultDecrypted(_keyFragment);
         }
 
         // Encrypted

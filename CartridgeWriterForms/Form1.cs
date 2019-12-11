@@ -10,7 +10,7 @@ namespace CartridgeWriterForms
     {
 
         private DeviceManager dm = new DeviceManager();
-        private Cartridge c = null;
+        private Cartridge c;
 
 
         public Form1()
@@ -42,9 +42,9 @@ namespace CartridgeWriterForms
             {
                 c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Timeout expired");
+                MessageBox.Show(ex.ToString());
             }
             if (c == null)
                 return;
@@ -124,5 +124,24 @@ namespace CartridgeWriterForms
             LoadControls();
         }
 
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(cboDevice.Text) || String.IsNullOrEmpty(cboPrinterType.Text))
+            {
+                MessageBox.Show("I need a Device and Printer Type before I can read.");
+                return;
+            }
+            try
+            {
+                c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text), false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            if (c == null)
+                return;
+            LoadControls();
+        }
     }
 }

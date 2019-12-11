@@ -59,7 +59,7 @@ namespace CartridgeWriter
             LoadDevices();
         }
 
-        public Cartridge ReadCartridge(string name, Machine machine)
+        public Cartridge ReadCartridge(string name, Machine machine, bool decrypt = true)
         {
             Cartridge c = null;
             byte[] rom = null;
@@ -91,7 +91,7 @@ namespace CartridgeWriter
 
             //SaveFlashToFile(rom, flash);
 
-            c = new Cartridge(flash, machine, rom);
+            c = new Cartridge(flash, machine, rom, decrypt);
 
             return c;
         }
