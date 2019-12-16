@@ -1,68 +1,17 @@
-﻿// Ported from material.py and manager.py by David Slayton (2014); copyright below.
-
-// Copyright (c) 2013, Benjamin Vanheuverzwijn <bvanheu@gmail.com>
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the <organization> nor the
-//       names of its contributors may be used to endorse or promote products
-//      derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <BENJAMIN VANHEUVERZWIJN> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-using CartridgeWriterExtensions;
+﻿using CartridgeWriterExtensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CartridgeWriterForms;
+using System.Windows;
+using CartridgeWriter;
 
-namespace CartridgeWriter
+namespace CartridgeWriterForms
 {
-
-    // Each cartridge contains an EEPROM with encryted information about
-    // the cartridge.  The Cartridge class contains methods to encrypt and
-    // decrypt the information stored on the cartridge's EEPROM.
-
-    // Typical structure on the EEPROM
-    //        offset : len
-    //        0x00   : 0x08 - Canister serial number (double) (part of the key, written *on* the canister as S/N)
-    //        0x08   : 0x08 - Material type (double)
-    //        0x10   : 0x14 - Manufacturing lot (string)
-    //        0x24   : 0x02 - Version? (must be 1)
-    //        0x28   : 0x08 - Manufacturing date (date yymmddhhmmss)
-    //        0x30   : 0x08 - Use date (date yymmddhhmmss)
-    //        0x38   : 0x08 - Initial material quantity (double)
-    //        0x40   : 0x02 - Plain content CRC (uint16)
-    //        0x46   : 0x02 - Crypted content CRC (uint16)
-    //        0x48   : 0x08 - Key (unencrypted, 8 bytes)
-    //        0x50   : 0x02 - Key CRC (unencrypted, uint16)
-    //        0x58   : 0x08 - Current material quantity (double)
-    //        0x60   : 0x02 - Current material quantity crypted CRC (unencrypted, uint16)
-    //        0x62   : 0x02 - Current material quantity CRC (unencrypted, uint16)
-    //       ~~~~~~~~~~~~~
-    //       14 0x00: 0x48 - crypted/plaintext (start, len)
-    //       15 0x58: 0x10 - unknown, looks like DEX IV, but why?
-    //       16 0x48: 0x10 - ^
-
-    public class Cartridge : ICartridge
+    public class CartridgeUprint : ICartridge
     {
-        private byte[] _encrypted = null;
-        private byte[] _decrypted = new byte[512];
+        public byte[] _encrypted = null;
+        private byte[] _decrypted = new byte[128];
         private Machine _machine = null;
         private byte[] _eepromUID = null;
         private byte[] _key = new byte[16];
@@ -74,7 +23,7 @@ namespace CartridgeWriter
         private byte[] _currentMaterialQuantityCRC = new byte[2];
 
 
-        public Cartridge(byte[] encrypted, Machine machine, byte[] eepromUID, bool decrypt = true)
+        public CartridgeUprint(byte[] encrypted, Machine machine, byte[] eepromUID, bool decrypt = true)
         {
             _encrypted = encrypted;
             _machine = machine;
@@ -86,7 +35,14 @@ namespace CartridgeWriter
             if (decrypt)
                 Decrypt();
             else
-                _decrypted = ByteExtensions.DefaultDecrypted(_keyFragment);
+            {
+                //FillDefaultValues();
+            }
+        }
+
+        private void FillDefaultValues()
+        {
+
         }
 
         // Encrypted
@@ -101,6 +57,8 @@ namespace CartridgeWriter
         
         // EEPROMUID
         public byte[] EEPROMUID { get { return _eepromUID; } }
+
+        
 
         // Serial number
         public double SerialNumber
@@ -162,26 +120,26 @@ namespace CartridgeWriter
             }
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Year)), 0, _decrypted, 0x28, 2);
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Month)), 0, _decrypted, 0x2a, 1);
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Day)), 0, _decrypted, 0x2b, 1);
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Hour)), 0, _decrypted, 0x2c, 1);
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Minute)), 0, _decrypted, 0x2d, 1);
-                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Second)), 0, _decrypted, 0x2e, 2);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Year)), 0, _decrypted, 0x30, 2);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Month)), 0, _decrypted, 0x32, 1);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Day)), 0, _decrypted, 0x33, 1);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Hour)), 0, _decrypted, 0x34, 1);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Minute)), 0, _decrypted, 0x35, 1);
+                Buffer.BlockCopy(BitConverter.GetBytes((ushort)(value.Second)), 0, _decrypted, 0x36, 2);
             }
         }
 
-        // Initial material quantity, in cubic feet
+        // Initial material quantity, in cubic inches
         public double InitialMaterialQuantity
         {
-            get { return BitConverter.ToDouble(_decrypted, 0x38); }
+            get { return 16.3871*BitConverter.ToDouble(_decrypted, 0x38); }
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _decrypted, 0x38, 8); }
         }
 
         // Remaining material quantity
         public double CurrentMaterialQuantity
         {
-            get { return BitConverter.ToDouble(_decrypted, 0x58); }
+            get { return 16.3871*BitConverter.ToDouble(_decrypted, 0x58); }
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _decrypted, 0x58, 8); }
         }
 
@@ -277,6 +235,7 @@ namespace CartridgeWriter
             if (!Crc16_Checksum.Checksum(currentMaterialQuantityDecrypted).SequenceEqual(_currentMaterialQuantityCRC))
                 throw new Exception("invalid current material quantity checksum");
         }
+
 
         //
         // Build a key used to encrypt/decrypt a cartridge

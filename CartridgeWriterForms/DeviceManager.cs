@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -33,6 +34,8 @@ using System.Management;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms;
+using CartridgeWriterForms;
 
 namespace CartridgeWriter
 {
@@ -96,7 +99,40 @@ namespace CartridgeWriter
             return c;
         }
 
-        public byte[] WriteCartridge(string name, Cartridge c)
+        public string ReadSerial(string port, string bayText)
+        {
+            using (SerialPort serialPort = new SerialPort(port, 38400))
+            {
+                serialPort.Parity = Parity.None;
+                serialPort.StopBits = StopBits.One;
+                serialPort.DataBits = 8;
+                serialPort.Handshake = Handshake.RequestToSend;
+                serialPort.DtrEnable = true;
+                serialPort.Open();
+                serialPort.DiscardInBuffer();
+                serialPort.Write(Bay.FromName(bayText).code_read);
+                serialPort.Write("\r\n");
+                Thread.Sleep(5000);
+                var result = serialPort.ReadExisting();
+                serialPort.Close();
+                if (String.IsNullOrEmpty(result))
+                    MessageBox.Show("I received nothing! Make sure the printer is connected.", "");
+                return result;
+            }
+        }
+
+        public CartridgeUprint ReadUprintCartridge(string inputFlash, bool decrypt = true)
+        {
+            var rom = ConvertHexStringToByteArray(clear_ID(inputFlash));
+            var flash = ConvertHexStringToByteArray(clear_code(inputFlash));
+
+            if (BitConverter.IsLittleEndian)
+                rom = rom.Reverse();
+
+            return new CartridgeUprint(flash, Machine.FromType("uPrint / uPrint Plus"), rom.Reverse(), decrypt);
+        }
+
+        public byte[] WriteCartridge(string name, ICartridge c)
         {
             byte[] result = null;
 
@@ -121,6 +157,36 @@ namespace CartridgeWriter
 
             return result;
         }
+
+        public void WriteUprintCartridge(ICartridge c, string bayName, string portName)
+        {
+            string newflash = Bay.FromName(bayName).code_write + CreateOutput(c.Encrypted);
+
+            using (SerialPort serialPort = new SerialPort(portName, 38400))
+            {
+                serialPort.Parity = Parity.None;
+                serialPort.StopBits = StopBits.One;
+                serialPort.DataBits = 8;
+                serialPort.Handshake = Handshake.RequestToSend;
+                serialPort.DtrEnable = true;
+                serialPort.Open();
+                serialPort.DiscardInBuffer();
+                serialPort.Write(newflash);
+                serialPort.Write("\r\n");
+                serialPort.Close();
+                System.Threading.Thread.Sleep(2000);
+                MessageBox.Show("Please check if it worked, by removing and reinserting the cartridge!", "");
+            }
+        }
+
+        //Creating the output string in the correct form for writing it back to the chip
+        public static string CreateOutput(byte[] output_flash)
+        {
+            string output;
+            output = "\"" + BitConverter.ToString(output_flash).Replace("-", ",") + "\"";
+            return output;
+        }
+
         private static bool IsOSUnix()
         {
             int p = (int)Environment.OSVersion.Platform;
@@ -282,6 +348,54 @@ namespace CartridgeWriter
                 comPortName = deviceName.Substring(startIndex, length);
 
             return comPortName;
+        }
+
+        public static byte[] ConvertHexStringToByteArray(string hexString)
+        {
+            hexString = hexString.Replace(" ", String.Empty);
+            byte[] HexAsBytes = new byte[(hexString.Length) / 2];
+
+            for (int index = 0; index < HexAsBytes.Length; index++)
+            {
+                string byteValue = hexString.Substring(index * 2, 2);
+                HexAsBytes[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            }
+
+            return HexAsBytes;
+
+        }
+
+        //extract the hexcode from the rest of the code sent over the serial port
+        private string clear_code(string uncut)
+        {
+            string[] splittedStrings = uncut.Split(new[] { "000000: " }, StringSplitOptions.None);
+            string Dump = splittedStrings[2];
+            string code = Dump.Substring(0, 48);
+            for (int i = 1; i <= (Dump.Length - 48) / 76; i++)
+            {
+                code = code + Dump.Substring(76 * i, 48);
+            }
+
+
+            return code;
+        }
+
+        //extract the ID from the rest of the code sent over the serial port
+        private string clear_ID(string uncut)
+        {
+            try
+            {
+                string[] splittedStrings = uncut.Split(new[] { "000000: " }, StringSplitOptions.None);
+                string clearcode = splittedStrings[1];
+                string ID = clearcode.Substring(0, 23);
+                return ID;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Not the right Form");
+                MessageBox.Show(e.ToString());
+                return "";
+            }
         }
     }
 }

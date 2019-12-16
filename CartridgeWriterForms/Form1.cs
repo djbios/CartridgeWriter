@@ -10,7 +10,7 @@ namespace CartridgeWriterForms
     {
 
         private DeviceManager dm = new DeviceManager();
-        private Cartridge c;
+        private ICartridge c;
 
 
         public Form1()
@@ -24,6 +24,7 @@ namespace CartridgeWriterForms
             cboPrinterType.Items.AddRange(Machine.GetAllTypes().ToArray());
             cboMaterialCurrent.Items.AddRange(Material.GetAllNames().ToArray());
             cboMaterialChangeTo.Items.AddRange(Material.GetAllNames().ToArray());
+            cbo_Bay.Items.AddRange(Bay.GetAllNames().ToArray());
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -40,7 +41,10 @@ namespace CartridgeWriterForms
             }
             try
             {
-                c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text));
+                if (cboDevice.Text == "uPrint / uPrint Plus")
+                    c = dm.ReadUprintCartridge(tb_rom.Text);
+                else
+                    c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text));
             }
             catch (Exception ex)
             {
@@ -51,7 +55,67 @@ namespace CartridgeWriterForms
             LoadControls();
         }
 
-        private void LoadControls()
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(cboDevice.Text) || String.IsNullOrEmpty(cboPrinterType.Text))
+            {
+                MessageBox.Show("I need a Device and Printer Type before I can read.");
+                return;
+            }
+            try
+            {
+                if (cboDevice.Text == "uPrint / uPrint Plus")
+                    c = dm.ReadUprintCartridge(tb_rom.Text, false);
+                else
+                    c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text), false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            if (c == null)
+                return;
+            LoadControls();
+        }
+
+        private void cmdWrite_Click(object sender, EventArgs e)
+        {
+            if (c == null)
+            {
+                MessageBox.Show("I need to Read before I can Write.");
+                return;
+            }
+
+
+            UpdateCartridge();
+
+            if (cboDevice.Text == "uPrint / uPrint Plus")
+            {
+                LoadControls();
+                dm.WriteUprintCartridge(c, cbo_Bay.Text, cboDevice.Text);
+            }
+            else
+            {
+                // Write the cartridge.
+                dm.WriteCartridge(cboDevice.Text, c);
+                LoadControls();
+            }
+        }
+       
+
+       
+
+        private void cboDevice_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            tb_rom.Text = dm.ReadSerial(cboDevice.Text, cbo_Bay.Text);
+        }
+
+          private void LoadControls()
         {
             txtEEPROMUID.Text = c.EEPROMUID.HexString();
             txtKeyFragment.Text = c.KeyFragment;
@@ -104,44 +168,6 @@ namespace CartridgeWriterForms
 
             if (!txtSignatureCurrent.Text.Equals(txtSignatureChangeTo.Text))
                 c.Signature = txtSignatureChangeTo.Text;
-        }
-
-        private void cmdWrite_Click(object sender, EventArgs e)
-        {
-            if (c == null)
-            {
-                MessageBox.Show("I need to Read before I can Write.");
-                return;
-            }
-
-
-            UpdateCartridge();
-
-            // Write the cartridge.
-            byte[] result = new byte[3];
-            result = dm.WriteCartridge(cboDevice.Text, c);
-
-            LoadControls();
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(cboDevice.Text) || String.IsNullOrEmpty(cboPrinterType.Text))
-            {
-                MessageBox.Show("I need a Device and Printer Type before I can read.");
-                return;
-            }
-            try
-            {
-                c = dm.ReadCartridge(cboDevice.Text, Machine.FromType(cboPrinterType.Text), false);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            if (c == null)
-                return;
-            LoadControls();
         }
     }
 }

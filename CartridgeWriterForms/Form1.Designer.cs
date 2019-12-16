@@ -70,6 +70,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
+            this.cbo_Bay = new System.Windows.Forms.ComboBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tb_rom = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -81,6 +85,7 @@
             this.cboDevice.Name = "cboDevice";
             this.cboDevice.Size = new System.Drawing.Size(145, 21);
             this.cboDevice.TabIndex = 0;
+            this.cboDevice.SelectedIndexChanged += new System.EventHandler(this.cboDevice_SelectedIndexChanged);
             // 
             // cboPrinterType
             // 
@@ -443,11 +448,49 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
+            // cbo_Bay
+            // 
+            this.cbo_Bay.FormattingEnabled = true;
+            this.cbo_Bay.Location = new System.Drawing.Point(12, 486);
+            this.cbo_Bay.Name = "cbo_Bay";
+            this.cbo_Bay.Size = new System.Drawing.Size(118, 21);
+            this.cbo_Bay.TabIndex = 42;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(12, 470);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(28, 13);
+            this.label16.TabIndex = 43;
+            this.label16.Text = "Bay:";
+            // 
+            // tb_rom
+            // 
+            this.tb_rom.Location = new System.Drawing.Point(12, 513);
+            this.tb_rom.Name = "tb_rom";
+            this.tb_rom.Size = new System.Drawing.Size(660, 20);
+            this.tb_rom.TabIndex = 44;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(136, 484);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 45;
+            this.button2.Text = "Read Serial";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 476);
+            this.ClientSize = new System.Drawing.Size(684, 545);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.tb_rom);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.cbo_Bay);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -530,6 +573,10 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cbo_Bay;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox tb_rom;
+        private System.Windows.Forms.Button button2;
     }
 }
 
